@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+class Category extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'name',
+        'slug',
+        'meta_key',
+        'code',        
+        'desc',
+        'parent_id',
+        'sequence',
+        'is_active',
+        'image',
+    ];
+
+    protected $appends = ['is_active_conv'];
+    public function getIsActiveConvAttribute()
+    {
+        $conv = "";
+        if ($this->status == 1) {
+            $conv = __('general.active', [], 'en');
+        } else {
+            $conv = __('general.notactive', [], 'en');
+        }
+        return $conv;
+    }
+
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function sons(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id')->withDefault();
+    }
+    public function locationsettings(): HasMany
+    {
+        return $this->hasMany(LocationSetting::class, 'category_id');
+    }
+    public function langposts(): HasMany
+    {
+        return $this->hasMany(LangPost::class, 'category_id');
+    }
+
+    public function mediaposts(): HasMany
+    {
+        return $this->hasMany(MediaPost::class, 'category_id');
+    }
+    //
+
+
+
+}
