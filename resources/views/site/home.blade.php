@@ -114,7 +114,7 @@
     <script>
         var token = '{{ csrf_token() }}';
     </script>
-    <script src="{{ url('assets/site/js/custom/home.js') }}"></script>
+
     <script src="{{ url('assets/site/js/sweetalert.min.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/validate.js') }}"></script>
     <script src="{{ url('assets/site/js/custom/ai.js') }}"></script>

@@ -35,10 +35,6 @@
 @endsection
 
 @section('js')
-    <script>
-        var token = '{{ csrf_token() }}';
-    </script>
-    <script src="{{ url('assets/site/js/custom/home.js') }}"></script>
 @endsection
 @section('css')
     <link href="{{ url('assets/site/css/custom/home.css') }}" rel="stylesheet">
