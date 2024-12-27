@@ -1,6 +1,6 @@
 <?php
 
-
+/*
 use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\ClientPackageController;
 use App\Http\Controllers\Web\ClientReportController;
@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\OptionValueController;
 use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\ReportOptionController;
 use App\Http\Controllers\Web\VisitorController;
+*/
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
@@ -18,42 +19,43 @@ use App\Http\Controllers\Web\LanguageController;
 
 use App\Http\Controllers\Web\MediaStoreController;
 use App\Http\Controllers\Web\SettingController;
-use App\Http\Controllers\Web\LocationController;
+// use App\Http\Controllers\Web\LocationController;
 use App\Http\Controllers\Web\PostController;
 use App\Http\Controllers\Web\CategoryController;
 use App\Http\Controllers\Web\DreamController;
 
 use App\Http\Controllers\Web\LangPostController;
 use App\Http\Controllers\Web\MediaPostController;
-use App\Http\Controllers\Web\MailController;
-use App\Http\Controllers\Web\ClientController;
+// use App\Http\Controllers\Web\MailController;
+// use App\Http\Controllers\Web\ClientController;
 //use  App\Http\Controllers\Web\ClientAuthController;
 
-use App\Http\Controllers\Web\SocialController;
-use App\Http\Controllers\Auth\SocialiteController;
+// use App\Http\Controllers\Web\SocialController;
+// use App\Http\Controllers\Auth\SocialiteController;
 
 use App\Http\Controllers\Web\TranslateController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Web\PasswordController;
-use App\Http\Controllers\Web\ClientPasswordResetController;
-use App\Http\Controllers\Web\PropertyController;
-use App\Http\Controllers\Web\PropertyDepController;
-use App\Http\Controllers\Web\CountryController;
+
+// use App\Http\Controllers\Auth\PasswordResetLinkController;
+// use App\Http\Controllers\Auth\NewPasswordController;
+// use App\Http\Controllers\Web\PasswordController;
+// use App\Http\Controllers\Web\ClientPasswordResetController;
+// use App\Http\Controllers\Web\PropertyController;
+// use App\Http\Controllers\Web\PropertyDepController;
+// use App\Http\Controllers\Web\CountryController;
 
 //site
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Web\SearchController;
+// use App\Http\Controllers\Web\SearchController;
 
-use App\Http\Controllers\Web\CodeController;
+// use App\Http\Controllers\Web\CodeController;
 use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\Web\FavoriteController;
-use App\Http\Controllers\Web\ClientSettingController;
+// use App\Http\Controllers\Web\FavoriteController;
+// use App\Http\Controllers\Web\ClientSettingController;
 use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\Web\PrivateImageController;
-use App\Http\Controllers\Web\PackageController;
+// use App\Http\Controllers\Web\PrivateImageController;
+// use App\Http\Controllers\Web\PackageController;
 
-use App\Http\Controllers\Web\PaymentController;
+// use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Api\ChatGPTController;
 
 //use Illuminate\Support\Facades\Facade\Artisan;
@@ -93,10 +95,10 @@ Route::get('/cashclear', function () {
     return 'ok';
 });
 
-Route::get('/askshow', [ChatGPTController::class, 'askshow']) ;
-Route::post('/senddream', [ChatGPTController::class, 'senddream']) ;
-Route::get('/dreams/{slug}', [DreamController::class, 'dreambyslug']) ;
-Route::get('/dreams', [DreamController::class, 'agreedreams']) ;
+Route::get('/askshow', [ChatGPTController::class, 'askshow']);
+Route::post('/senddream', [ChatGPTController::class, 'senddream']);
+Route::get('/dreams/{slug}', [DreamController::class, 'dreambyslug']);
+Route::get('/dreams', [DreamController::class, 'agreedreams']);
 Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin');
     // Route::any('/search', [QuestionController::class, 'search']);
@@ -109,13 +111,13 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::post('/updateprofile/{id}', [UserController::class, 'updateprofile'])->name('user.updateprofile');
 
         });
-      ///////////////////////////////
-      Route::resource('dream', DreamController::class, ['except' => ['update']]);
-      Route::prefix('dream')->group(function () {
-        Route::post('/update/{id}', [DreamController::class, 'update'])->name('dream.update');
-   
+        ///////////////////////////////
+        Route::resource('dream', DreamController::class, ['except' => ['update']]);
+        Route::prefix('dream')->group(function () {
+            Route::post('/update/{id}', [DreamController::class, 'update'])->name('dream.update');
 
-    });
+
+        });
         /////////////////////////////////////////
         Route::resource('language', LanguageController::class, ['except' => ['update']]);
         Route::prefix('language')->group(function () {
@@ -154,9 +156,14 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::get('/head', [SettingController::class, 'getheadinfo']);
             Route::get('/createhead', [SettingController::class, 'createhead']);
             Route::post('/storehead', [SettingController::class, 'storehead']);
-
             Route::post('/updatehead/{id}', [SettingController::class, 'updatehead']);
             Route::delete('/delhead/{id}', [SettingController::class, 'destroy']);
+            //////////////body
+            Route::get('/body', [SettingController::class, 'getbodyinfo']);
+            Route::get('/createbody', [SettingController::class, 'createbody']);
+            Route::post('/storebody', [SettingController::class, 'storebody']);
+            Route::post('/updatebody/{id}', [SettingController::class, 'updatebody']);
+            Route::delete('/delbody/{id}', [SettingController::class, 'destroy']);
             //////////////footer
             Route::get('/footer', [SettingController::class, 'footerinfo']);
             Route::get('/createfooter', [SettingController::class, 'createfooter']);
@@ -168,7 +175,7 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             // Route::get('/question', [SettingController::class, 'quessetting']);
             // Route::post('/question/{id}', [SettingController::class, 'quesupdate']);
         });
-     
+
         //questions
         //category
         // Route::resource('categoryques', CategoryQuesController::class, ['except' => ['update']]);
@@ -231,11 +238,6 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
             Route::post('/update/{id}', [CategoryController::class, 'update']);
             Route::delete('/delete/{id}', [CategoryController::class, 'destroy']);
             //sort
-            Route::get('/sort', [LocationController::class, 'showtable']);
-            Route::get('/sort/{loc}', [LocationController::class, 'sortpage']);
-            Route::get('/fillcombo/{loc}', [LocationController::class, 'getpagesforcombo']);
-            Route::get('/fillsort/{loc}', [LocationController::class, 'fillsortpages']);
-            Route::post('/updatesort/{loc}', [LocationController::class, 'updatepagesort']);
 
         });
 
@@ -262,46 +264,17 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
 
     });
 
-    Route::prefix('client')->group(function () {
-        // Route::post('/update/{id}', [TranslateController::class, 'update'])->name('post.update');    
-        Route::get('/', [ClientController::class, 'index']);
-        Route::get('/show/{id}', [ClientController::class, 'show']);
-        Route::get('/pull/{id}', [ClientController::class, 'pullops']);
-        Route::get('/allpull', [ClientController::class, 'allpullops']);
-        Route::post('/updatespecial', [ClientController::class, 'updatespecial']);
-        // Route::post('/upload', [TranslateController::class, 'uploadLargeFiles'])->name('post.upload');;
 
-    });
 
     //married
-    Route::prefix('property')->group(function () {
-        // Route::post('/update/{id}', [TranslateController::class, 'update'])->name('post.update');    
-        Route::get('/', [PropertyController::class, 'index']);
-        Route::get('/create', [PropertyController::class, 'create']);
-        Route::post('/store', [PropertyController::class, 'store']);
-        Route::post('/update/{id}', [PropertyController::class, 'update']);
-        Route::delete('/destroy/{id}', [PropertyController::class, 'destroy']);
-        Route::get('/edit/{id}', [PropertyController::class, 'edit']);
 
-    });
- 
 
- 
-    Route::prefix('ai')->group(function () {
-        Route::get('property', [OptionGroupController::class, 'property_show']);
-        Route::get('option/{id}', [OptionGroupController::class, 'option_show']);
-        Route::get('optionrange/{id}', [OptionGroupController::class, 'option_range']);
-        Route::post('saverange', [OptionGroupController::class, 'save_range']);
-    });
+
+
+
     //package
-  
-    Route::prefix('order')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('order.index');
-        Route::get('{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
-        Route::post('update/{id}', [OrderController::class, 'update'])->name('order.update');
-        Route::delete('delete/{id}', [OrderController::class, 'destroy'])->name('order.destroy');
-    });
-    
+
+
     //
     Route::middleware('role.admin:admin-super')->group(function () {
     });
@@ -315,35 +288,19 @@ Route::middleware(['auth:web', 'verified'])->prefix('admin')->group(function () 
 //password
 Route::get('/page/{slug}', [HomeController::class, 'showpage']);
 
-Route::get('u/password/reset', [ClientPasswordResetController::class, 'showLinkRequestForm'])->name('client.password.request');
-Route::post('u/password/email', [ClientPasswordResetController::class, 'sendResetLinkEmail'])->name('client.password.email');
-Route::get('u/password/reset/{token}', [ClientPasswordResetController::class, 'showResetForm'])->name('client.password.reset');
-Route::post('u/password/reset', [ClientPasswordResetController::class, 'reset'])->name('client.password.update');
 
 //
 
-// Route::get('{lang}/questions', [QuestionController::class, 'getquestions']);
-Route::post('/befor-reg', [ClientController::class, 'befor_reg_check']);
-Route::post('/checkmail', [ClientController::class, 'check_email']);
-//cities
-Route::get('/cities/{id}', [CountryController::class, 'getCities']);
 
 Route::prefix('{lang}')->group(function () {
     Route::get('/home', [HomeController::class, 'index']);
-    Route::get('/befor-reg', [ClientController::class, 'befor_reg']);
-    Route::get('/member/{id}', [ClientController::class, 'show_member']);
+
     // Route::get('/scores', [ClientController::class, 'scores']);
     //Route::get('/{slug}', [ClientController::class, 'send_message']);
- 
+
 
     Route::get('/page/{slug}', [HomeController::class, 'showpage']);
-    Route::middleware('guest:client')->group(function () {
-        Route::get('/register/{gender}', [ClientController::class, 'create'])->name('register.client');
-        Route::post('/register', [ClientController::class, 'store']);
 
-        Route::get('/login', [ClientController::class, 'showlogin'])->name('login.client');
-        Route::post('/login', [ClientController::class, 'login']);
-    });
 });
 
 //     Route::prefix('{lang}')->group(function () {
@@ -352,64 +309,9 @@ Route::prefix('{lang}')->group(function () {
 //vote
 //  Route::post('/addvote/{slug}', [AnswerController::class, 'addvote']);
 
-Route::resource('verify', CodeController::class);
 //can only logout without verify
-Route::middleware(['auth:client', 'verified'])->group(function () {
-
-    Route::post('u/logout', [ClientController::class, 'logout'])->name('logout.client');
-});
-Route::middleware(['auth:client', 'verified', 'code'])->group(function () {
-    //  Route::post('u/logout', [ClientController::class, 'logout'])->name('logout.client');
-    //account
-    Route::post('u/delete', [ClientController::class, 'destroy']);
-    Route::get('/balanceinfo', [ClientController::class, 'balanceinfo']);
-    //Chat
-  
- 
- 
-    Route::post('/setting', [ClientSettingController::class, 'update']);
- 
-    // Route::get('/voteres/{id}', [HomeController::class, 'get_vote_results']);
- 
-    //  Route::get('/voteres/{slug}', [AnswerController::class, 'voteresult']);
-
-    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
-    Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-
-    Route::get('/paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
-    Route::get('/paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
-    Route::prefix('{lang}')->group(function () {
-        //account
-        Route::post('/updatepass', [ClientController::class, 'updatepass'])->name('client.updatepass');
-        Route::post('/updatename', [ClientController::class, 'updatename'])->name('client.updatename');
-        Route::post('/updateemail', [ClientController::class, 'update_email'])->name('client.updateemail');
-        Route::get('/edit-profile', [ClientController::class, 'edit'])->name('client.account');
-        Route::get('/edit-username', [ClientController::class, 'edit_username'])->name('client.edit_username');
-        Route::get('/edit-email', [ClientController::class, 'edit_email'])->name('client.edit_email');
-        Route::get('/edit-password', [ClientController::class, 'edit_password'])->name('client.edit_password');
-        Route::post('/update', [ClientController::class, 'update'])->name('client.update');
-        Route::post('/pull', [ClientController::class, 'pull']);
-        Route::get('/edit-image', [ClientController::class, 'edit_image'])->name('client.edit_image');
-        Route::post('/update-image', [ClientController::class, 'update_image'])->name('client.update_image');
-        Route::post('/delete-image', [ClientController::class, 'delete_image']);
-        Route::get('/profile', [ClientController::class, 'showprofile'])->name('client.profile');
-        Route::get('/setting', [ClientSettingController::class, 'index']);
-
-  
-
-  
-     
-        Route::get('notifications', [NotificationController::class, 'index']);
-
-     
-        //payment
 
 
-
-
-
-    });
-});
 
 
 require __DIR__ . '/auth.php';

@@ -283,15 +283,15 @@ class SettingController extends Controller
     }
   }
 
-  public function delsocial($id)
-  {
-    $item = Setting::find($id);
-    if (!($item === null)) {
-      LocationSetting::where('setting_id', $id)->delete();
-      Setting::find($id)->delete();
-    }
-    return redirect()->route('setting.getsocial');
-  }
+  // public function delsocial($id)
+  // {
+  //   $item = Setting::find($id);
+  //   if (!($item === null)) {
+  //     LocationSetting::where('setting_id', $id)->delete();
+  //     Setting::find($id)->delete();
+  //   }
+  //   return redirect()->route('setting.getsocial');
+  // }
 
 
   //header info
@@ -412,6 +412,7 @@ class SettingController extends Controller
       if (
         ($item->category == 'header-info' && $item->dep == 'header')
         || ($item->category == 'footer-info' && $item->dep == 'footer')
+        || ($item->category == 'body-info' && $item->dep == 'body')
       ) {
         Setting::find($id)->delete();
       }
@@ -571,7 +572,87 @@ class SettingController extends Controller
       return response()->json("ok");
     }
   }
+  //body
+  public function getbodyinfo()
+  {
 
+
+    $List = Setting::select(
+      'id',
+      'name1',
+      'value1',
+      'name2',
+      'value2',
+      'name3',
+      'value3',
+      'category',
+      'dep',
+      'sequence',
+      'section',
+      'location',
+      'is_active',
+    )->where('category', 'body-info')->where('dep', 'body')->get();
+    // $phonerow = $List->where('dep', 'phone')->first();
+
+    // $emailrow = $List->where('dep', 'email')->first();
+
+    return view("admin.setting.body.edit", ['List' => $List]);
+  }
+
+  public function createbody()
+  {
+    return view("admin.setting.body.create");
+  }
+  public function storebody(StoreHeadRequest $request)
+  {
+    $formdata = $request->all();
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      $newObj = new Setting();
+      $newObj->name1 = $formdata['name'];
+      $newObj->value1 = $formdata['code'];
+      // $newObj->name2 = 'Code';
+      // $newObj->value2 = $formdata['code'];
+      // $newObj->name3 = 'Link';
+      // $newObj->value3 = $formdata['link'];
+      $newObj->category = 'body-info';
+      $newObj->dep = 'body';
+      $newObj->sequence = 0;
+      $newObj->section = '';
+      $newObj->location = '';
+      $newObj->is_active = 1;
+      $newObj->save();
+      return response()->json("ok");
+    }
+  }
+  public function updatebody(StoreHeadRequest $request, $id)
+  {
+    $formdata = $request->all();
+    $validator = Validator::make(
+      $formdata,
+      $request->rules(),
+      $request->messages()
+    );
+    if ($validator->fails()) {
+      return response()->json($validator);
+    } else {
+      $item = Setting::find($id);
+      if ($item->category == 'body-info' && $item->dep == 'body') {
+        Setting::find($id)->update([
+          'name1' => $formdata['name'],
+          'value1' => $formdata['code'],
+        ]);
+      }
+      return response()->json("ok");
+    }
+  }
+  //footer
   public function footerinfo()
   {
 
@@ -658,23 +739,25 @@ class SettingController extends Controller
 
   //Question settting
 //get ques setting
-public function getquessetting()
-{
-  $List = Setting::select(
-    'id',
-    'name1',
-    'value1',
-    'category',
-    'dep',
-    'is_active',
-  )->where('category', 'question')->get();
+  public function getquessetting()
+  {
+    $List = Setting::select(
+      'id',
+      'name1',
+      'value1',
+      'category',
+      'dep',
+      'is_active',
+    )->where('category', 'question')->get();
 
-  $minpoints = $List->where('dep', 'minpoints')->first();
+    $minpoints = $List->where('dep', 'minpoints')->first();
 
-  $pointsrate = $List->where('dep', 'pointsrate')->first();
-  return ['minpoints'=> $minpoints->value1,
-  'pointsrate'=>$pointsrate->value1];
-}
+    $pointsrate = $List->where('dep', 'pointsrate')->first();
+    return [
+      'minpoints' => $minpoints->value1,
+      'pointsrate' => $pointsrate->value1
+    ];
+  }
   public function quessetting()
   {
 

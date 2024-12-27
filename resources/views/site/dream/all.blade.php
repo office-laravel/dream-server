@@ -12,16 +12,18 @@
                 @forelse ($dreams as $last_dream)
                     <div class=" col-md-4 post-card-container   ">
                         <div class="  post-card ">
-                            <p class=" ">{{ $last_dream->title }}</p>
+                            <a href="{{ url('dreams', $last_dream->id) }}">
+                                <p class=" ">{{ $last_dream->title }}</p>
+                            </a>
+                            <p class=" ">{{ Illuminate\Support\Str::limit($last_dream->content, 60) }}</p>
                             <div class="post-card-botom">
                                 <span> {{ Illuminate\Support\Carbon::parse($last_dream->created_at)->diffForHumans() }}
                                 </span>
-                                <a href="{{ url('dreams', $last_dream->slug) }}" class=" ">اقرأ المزيد ←</a>
+
                             </div>
                         </div>
 
                     </div>
-
                 @empty
                     <div class=" col-md-12 ">
                         <span style="text-align:center;">لايوجد تفاسير</span>

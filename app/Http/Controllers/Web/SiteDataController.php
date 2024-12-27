@@ -93,9 +93,14 @@ class SiteDataController extends Controller
                 $query->where('category', 'footer-info')
                     ->where('dep', 'footer');
             })
+            ->orWhere(function ($query) {
+                $query->where('category', 'body-info')
+                    ->where('dep', 'body');
+            })
             ->get();
         $headerlist = $List2->where('category', 'header-info')->select('id', 'name1', 'value1');
         $footerlist = $List2->where('category', 'footer-info')->select('id', 'name1', 'value1');
+        $bodylist = $List2->where('category', 'body-info')->select('id', 'name1', 'value1');
         $mainarr = [
             "title" => $title,
             // "desc" => $desc,
@@ -111,6 +116,7 @@ class SiteDataController extends Controller
             // "whatsapp" => $whatsApp,
             'headerlist' => $headerlist,
             'footerlist' => $footerlist,
+            'bodylist' => $bodylist,
         ];
 
         //View::share('sitetitle', $title);
@@ -155,25 +161,26 @@ class SiteDataController extends Controller
 
         return $transarr;
     }
-    public function getSocialbyLocation($loc)
-    {
-        $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
-            $query->where('name', $loc);
-        })->wherehas('setting', function ($query) {
-            $query->where('is_active', 1);
-        })->with('location', 'setting')->orderBy('sequence')->get();
-        $List = $Dblist->map(function ($locSetting) {
-            return [
-                'id' => $locSetting->id,
-                'name' => $locSetting->setting->value1,
-                'code' => $locSetting->setting->value2,
-                'link' => $locSetting->setting->value3,
-                'sequence' => $locSetting->sequence,
-            ];
-        });
 
-        return $List;
-    }
+    // public function getSocialbyLocation($loc)
+    // {
+    //     $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
+    //         $query->where('name', $loc);
+    //     })->wherehas('setting', function ($query) {
+    //         $query->where('is_active', 1);
+    //     })->with('location', 'setting')->orderBy('sequence')->get();
+    //     $List = $Dblist->map(function ($locSetting) {
+    //         return [
+    //             'id' => $locSetting->id,
+    //             'name' => $locSetting->setting->value1,
+    //             'code' => $locSetting->setting->value2,
+    //             'link' => $locSetting->setting->value3,
+    //             'sequence' => $locSetting->sequence,
+    //         ];
+    //     });
+
+    //     return $List;
+    // }
 
     public function getSlideData($loc)
     {
@@ -211,109 +218,109 @@ class SiteDataController extends Controller
     }
 
     //footer
-    public function getfooterLocation($lang_id)
-    {
-        $Dblist = LocationSetting::wherehas('location', function ($query) {
-            $query->where('name', 'footer-social-title')
-                ->orwhere('name', 'footer-bottom')
-                ->orWhere('name', 'Like', '%footer-sec-%');
-        })->
-            wherehas('post', function ($query) {
-                $query->where('status', 1);
-            })
-            ->with([
-                'location',
-                'post.langposts' => function ($q) use ($lang_id) {
-                    $q->where('lang_id', $lang_id);
-                }
-            ])->orderBy('sequence')->get();
+    // public function getfooterLocation($lang_id)
+    // {
+    //     $Dblist = LocationSetting::wherehas('location', function ($query) {
+    //         $query->where('name', 'footer-social-title')
+    //             ->orwhere('name', 'footer-bottom')
+    //             ->orWhere('name', 'Like', '%footer-sec-%');
+    //     })->
+    //         wherehas('post', function ($query) {
+    //             $query->where('status', 1);
+    //         })
+    //         ->with([
+    //             'location',
+    //             'post.langposts' => function ($q) use ($lang_id) {
+    //                 $q->where('lang_id', $lang_id);
+    //             }
+    //         ])->orderBy('sequence')->get();
 
 
-        $List = $Dblist->map(function ($locPost) {
-            if ($locPost->post && $locPost->post->langposts->first()) {
-                return [
-                    'id' => $locPost->id,
-                    'loc_name' => $locPost->location->name,
-                    'tr_title' => $locPost->post->langposts->first()->title_trans,
-                    'tr_content' => $locPost->post->langposts->first()->content_trans,
-                    'sequence' => $locPost->sequence,
-                ];
-            } else {
-                return [
-                    'id' => $locPost->id,
-                    'loc_name' => $locPost->location->name,
-                    'tr_title' => "",
-                    'tr_content' => "",
-                    'sequence' => $locPost->sequence,
-                ];
-            }
+    //     $List = $Dblist->map(function ($locPost) {
+    //         if ($locPost->post && $locPost->post->langposts->first()) {
+    //             return [
+    //                 'id' => $locPost->id,
+    //                 'loc_name' => $locPost->location->name,
+    //                 'tr_title' => $locPost->post->langposts->first()->title_trans,
+    //                 'tr_content' => $locPost->post->langposts->first()->content_trans,
+    //                 'sequence' => $locPost->sequence,
+    //             ];
+    //         } else {
+    //             return [
+    //                 'id' => $locPost->id,
+    //                 'loc_name' => $locPost->location->name,
+    //                 'tr_title' => "",
+    //                 'tr_content' => "",
+    //                 'sequence' => $locPost->sequence,
+    //             ];
+    //         }
 
-        });
+    //     });
 
-        return $List;
-    }
+    //     return $List;
+    // }
     //mainmenu
-    public function getmainmenu($lang_id)
-    {
-        $Dblist = LocationSetting::wherehas('location', function ($query) {
-            $query->where('name', 'main-menu');
-        })->
-            wherehas('post', function ($query) {
-                $query->where('status', 1);
-            })
-            ->
-            orWhereHas('category', function ($query) {
-                $query->where('status', 1);
-            })
-            ->with([
-                'location',
-                'post.langposts' => function ($q) use ($lang_id) {
-                    $q->where('lang_id', $lang_id);
-                },
-                'category.langposts' => function ($q) use ($lang_id) {
-                    $q->where('lang_id', $lang_id);
-                }
-            ])->orderBy('sequence')->get();
+    // public function getmainmenu($lang_id)
+    // {
+    //     $Dblist = LocationSetting::wherehas('location', function ($query) {
+    //         $query->where('name', 'main-menu');
+    //     })->
+    //         wherehas('post', function ($query) {
+    //             $query->where('status', 1);
+    //         })
+    //         ->
+    //         orWhereHas('category', function ($query) {
+    //             $query->where('status', 1);
+    //         })
+    //         ->with([
+    //             'location',
+    //             'post.langposts' => function ($q) use ($lang_id) {
+    //                 $q->where('lang_id', $lang_id);
+    //             },
+    //             'category.langposts' => function ($q) use ($lang_id) {
+    //                 $q->where('lang_id', $lang_id);
+    //             }
+    //         ])->orderBy('sequence')->get();
 
 
-        $List = $Dblist->map(function ($locPost) use ($lang_id) {
-            //if($locPost->post && $locPost->post->langposts->first()){
-            $tr_title = '';
-            $tr_content = '';
-            $slug = '';
-            $sons = [];
-            $code = '';
-            if ($locPost->category_id > 0 && $locPost->category->langposts->first()) {
-                $tr_title = $locPost->category->langposts->first()->title_trans;
-                $slug = $locPost->category->slug;
-                $code = $locPost->category->code;
-                //  $tr_content =$locPost->category->langposts->first()->content_trans;
-                $sons = $this->mapcategorylist($locPost->category->sons->where('status', 1), $lang_id);
-            } else if ($locPost->post_id > 0 && $locPost->post->langposts->first()) {
-                $tr_title = $locPost->post->langposts->first()->title_trans;
-                $slug = $locPost->post->slug;
-                $code = $locPost->post->code;
-                //    $tr_content =$locPost->post->langposts->first()->content_trans;
-            }
-            return [
-                'id' => $locPost->id,
-                'category_id' => $locPost->category_id,
-                'post_id' => $locPost->post_id,
-                'loc_name' => $locPost->location->name,
-                'tr_title' => $tr_title,
-                // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
-                'sequence' => $locPost->sequence,
-                'sons' => $sons,
-                'slug' => $slug,
-                'code' => $code,
+    //     $List = $Dblist->map(function ($locPost) use ($lang_id) {
+    //         //if($locPost->post && $locPost->post->langposts->first()){
+    //         $tr_title = '';
+    //         $tr_content = '';
+    //         $slug = '';
+    //         $sons = [];
+    //         $code = '';
+    //         if ($locPost->category_id > 0 && $locPost->category->langposts->first()) {
+    //             $tr_title = $locPost->category->langposts->first()->title_trans;
+    //             $slug = $locPost->category->slug;
+    //             $code = $locPost->category->code;
+    //             //  $tr_content =$locPost->category->langposts->first()->content_trans;
+    //             $sons = $this->mapcategorylist($locPost->category->sons->where('status', 1), $lang_id);
+    //         } else if ($locPost->post_id > 0 && $locPost->post->langposts->first()) {
+    //             $tr_title = $locPost->post->langposts->first()->title_trans;
+    //             $slug = $locPost->post->slug;
+    //             $code = $locPost->post->code;
+    //             //    $tr_content =$locPost->post->langposts->first()->content_trans;
+    //         }
+    //         return [
+    //             'id' => $locPost->id,
+    //             'category_id' => $locPost->category_id,
+    //             'post_id' => $locPost->post_id,
+    //             'loc_name' => $locPost->location->name,
+    //             'tr_title' => $tr_title,
+    //             // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
+    //             'sequence' => $locPost->sequence,
+    //             'sons' => $sons,
+    //             'slug' => $slug,
+    //             'code' => $code,
 
-            ];
+    //         ];
 
 
-        });
+    //     });
 
-        return $List;
-    }
+    //     return $List;
+    // }
     public function mapcategorylist($Dblist, $lang_id)
     {
         $List = $Dblist->map(function ($category) use ($lang_id) {
@@ -901,155 +908,155 @@ class SiteDataController extends Controller
         $catmodel = Category::where('slug', $slug)->first();
         return view("admin.page.add");
     }
-    public function getmenubyloc($loc)
-    {
-        $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
-            $query->where('name', $loc);
-        })->where(function ($query) {
-            $query->wherehas('category', function ($query) {
-                $query->where('status', 1);
-            })
-                ->orWhereHas('post', function ($query) {
-                    $query->where('status', 1);
-                });
-        })
-            //   ->
-            //   wherehas('post', function ($query)  {
-            //     $query->where('status',1);
-            //   })
+    //     public function getmenubyloc($loc)
+//     {
+//         $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
+//             $query->where('name', $loc);
+//         })->where(function ($query) {
+//             $query->wherehas('category', function ($query) {
+//                 $query->where('status', 1);
+//             })
+//                 ->orWhereHas('post', function ($query) {
+//                     $query->where('status', 1);
+//                 });
+//         })
+//             //   ->
+//             //   wherehas('post', function ($query)  {
+//             //     $query->where('status',1);
+//             //   })
 
-            //   ->
-            //   wherehas('category', function ($query)  {
-            //     $query->where('status',1);
-            //   })
-            ->with([
-                'location',
-                'post' => function ($q) {
-                    $q->where('status', 1);
-                }
-                ,
-                'category' => function ($q) {
-                    $q->where('status', 1);
-                }
-            ])->orderBy('sequence')->get();
-
-
-        $List = $Dblist->map(function ($locPost) {
-            //if($locPost->post && $locPost->post->langposts->first()){
-            $tr_title = '';
-            $tr_content = '';
-            $slug = '';
-            $sons = [];
-            $code = '';
-            if ($locPost->category_id > 0) {
-                $tr_title = $locPost->category->title;
-                $slug = $locPost->category->slug;
-                $code = $locPost->category->code;
-                $urlpath = url('page', $slug);
-                //  $tr_content =$locPost->category->langposts->first()->content_trans;
-//    $sons=  $this->mapcategorylist($locPost->category->sons->where('status',1),$lang_id);
-            } else if ($locPost->post_id > 0) {
-                $tr_title = $locPost->post->title;
-                $slug = $locPost->post->slug;
-                $code = $locPost->post->code;
-                //    $tr_content =$locPost->post->langposts->first()->content_trans;
-            }
-
-            return [
-                'id' => $locPost->id,
-                'category_id' => $locPost->category_id,
-                'post_id' => $locPost->post_id,
-                'loc_name' => $locPost->location->name,
-                'tr_title' => $tr_title,
-                // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
-                'sequence' => $locPost->sequence,
-                // 'sons' =>$sons, 
-                'slug' => $slug,
-                'code' => $code,
-                'urlpath' => $urlpath,
-
-            ];
+    //             //   ->
+//             //   wherehas('category', function ($query)  {
+//             //     $query->where('status',1);
+//             //   })
+//             ->with([
+//                 'location',
+//                 'post' => function ($q) {
+//                     $q->where('status', 1);
+//                 }
+//                 ,
+//                 'category' => function ($q) {
+//                     $q->where('status', 1);
+//                 }
+//             ])->orderBy('sequence')->get();
 
 
-        });
+    //         $List = $Dblist->map(function ($locPost) {
+//             //if($locPost->post && $locPost->post->langposts->first()){
+//             $tr_title = '';
+//             $tr_content = '';
+//             $slug = '';
+//             $sons = [];
+//             $code = '';
+//             if ($locPost->category_id > 0) {
+//                 $tr_title = $locPost->category->title;
+//                 $slug = $locPost->category->slug;
+//                 $code = $locPost->category->code;
+//                 $urlpath = url('page', $slug);
+//                 //  $tr_content =$locPost->category->langposts->first()->content_trans;
+// //    $sons=  $this->mapcategorylist($locPost->category->sons->where('status',1),$lang_id);
+//             } else if ($locPost->post_id > 0) {
+//                 $tr_title = $locPost->post->title;
+//                 $slug = $locPost->post->slug;
+//                 $code = $locPost->post->code;
+//                 //    $tr_content =$locPost->post->langposts->first()->content_trans;
+//             }
 
-        return $List;
-    }
+    //             return [
+//                 'id' => $locPost->id,
+//                 'category_id' => $locPost->category_id,
+//                 'post_id' => $locPost->post_id,
+//                 'loc_name' => $locPost->location->name,
+//                 'tr_title' => $tr_title,
+//                 // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
+//                 'sequence' => $locPost->sequence,
+//                 // 'sons' =>$sons, 
+//                 'slug' => $slug,
+//                 'code' => $code,
+//                 'urlpath' => $urlpath,
+
+    //             ];
+
+
+    //         });
+
+    //         return $List;
+//     }
 
     //question
-    public function getquescatbyloc($loc, $lang_id)
-    {
-        $langcode = Language::find($lang_id)->code;
-        $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
-            $query->where('name', $loc);
-        })->where(function ($query) {
-            $query->wherehas('category', function ($query) {
-                $query->where('status', 1);
-            });
-        })
-            //   ->
-            //   wherehas('post', function ($query)  {
-            //     $query->where('status',1);
-            //   })
+    // public function getquescatbyloc($loc, $lang_id)
+    // {
+    //     $langcode = Language::find($lang_id)->code;
+    //     $Dblist = LocationSetting::wherehas('location', function ($query) use ($loc) {
+    //         $query->where('name', $loc);
+    //     })->where(function ($query) {
+    //         $query->wherehas('category', function ($query) {
+    //             $query->where('status', 1);
+    //         });
+    //     })
+    //         //   ->
+    //         //   wherehas('post', function ($query)  {
+    //         //     $query->where('status',1);
+    //         //   })
 
-            //   ->
-            //   wherehas('category', function ($query)  {
-            //     $query->where('status',1);
-            //   })
+    //         //   ->
+    //         //   wherehas('category', function ($query)  {
+    //         //     $query->where('status',1);
+    //         //   })
 
-            ->with([
-                'location',
-                'category.langposts' => function ($q) use ($lang_id) {
-                    $q->where('lang_id', $lang_id);
-                }
-                ,
-                'category.mediaposts' => function ($q) {
-                    $q->with('mediastore');
-                }
-            ])->orderBy('sequence')->get();
-        $List = $Dblist->map(function ($locPost) use ($langcode) {
-            //if($locPost->post && $locPost->post->langposts->first()){
-            $tr_title = '';
-            //  $tr_content ='';
-            $slug = '';
+    //         ->with([
+    //             'location',
+    //             'category.langposts' => function ($q) use ($lang_id) {
+    //                 $q->where('lang_id', $lang_id);
+    //             }
+    //             ,
+    //             'category.mediaposts' => function ($q) {
+    //                 $q->with('mediastore');
+    //             }
+    //         ])->orderBy('sequence')->get();
+    //     $List = $Dblist->map(function ($locPost) use ($langcode) {
+    //         //if($locPost->post && $locPost->post->langposts->first()){
+    //         $tr_title = '';
+    //         //  $tr_content ='';
+    //         $slug = '';
 
-            $code = '';
-            // if($locPost->category_id>0){
-            if ($locPost->category->langposts->first()) {
-                $tr_title = $locPost->category->langposts->first()->title_trans;
-            }
-            $image_path = "";
-            if ($locPost->category->mediaposts->first()) {
-                $image_path = $locPost->category->mediaposts->first()->mediastore->image_path;
-            }
+    //         $code = '';
+    //         // if($locPost->category_id>0){
+    //         if ($locPost->category->langposts->first()) {
+    //             $tr_title = $locPost->category->langposts->first()->title_trans;
+    //         }
+    //         $image_path = "";
+    //         if ($locPost->category->mediaposts->first()) {
+    //             $image_path = $locPost->category->mediaposts->first()->mediastore->image_path;
+    //         }
 
-            $slug = $locPost->category->slug;
-            $code = $locPost->category->code;
+    //         $slug = $locPost->category->slug;
+    //         $code = $locPost->category->code;
 
-            $urlpath = url($langcode, ['quiz', $slug]);
-            //  $tr_content =$locPost->category->langposts->first()->content_trans;
+    //         $urlpath = url($langcode, ['quiz', $slug]);
+    //         //  $tr_content =$locPost->category->langposts->first()->content_trans;
 
-            // }
+    //         // }
 
-            return [
-                'id' => $locPost->id,
-                'category_id' => $locPost->category_id,
-                'loc_name' => $locPost->location->name,
-                'tr_title' => $tr_title,
-                // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
-                'sequence' => $locPost->sequence,
+    //         return [
+    //             'id' => $locPost->id,
+    //             'category_id' => $locPost->category_id,
+    //             'loc_name' => $locPost->location->name,
+    //             'tr_title' => $tr_title,
+    //             // 'tr_content' => $locPost->post->langposts->first()->content_trans,                 
+    //             'sequence' => $locPost->sequence,
 
-                'slug' => $slug,
-                'code' => $code,
-                'urlpath' => $urlpath,
-                'image_path' => $image_path
-            ];
+    //             'slug' => $slug,
+    //             'code' => $code,
+    //             'urlpath' => $urlpath,
+    //             'image_path' => $image_path
+    //         ];
 
 
-        });
+    //     });
 
-        return $List;
-    }
+    //     return $List;
+    // }
 
     public function getcategory($slug, $lang_id)
     {
@@ -1163,5 +1170,5 @@ class SiteDataController extends Controller
         return $tr_val;
     }
 
-    
+
 }

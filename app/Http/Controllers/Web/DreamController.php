@@ -24,9 +24,9 @@ class DreamController extends Controller
 
     public function lastdreams()
     {
-        $items = Dream::where('status',1)->orderByDesc('created_at')->limit(6)->get();
+        $items = Dream::where('status', 1)->orderByDesc('created_at')->limit(6)->get();
         return $items;
-        
+
     }
 
     /**
@@ -44,19 +44,19 @@ class DreamController extends Controller
     {
         //
     }
-    public function storedream(Dream $post )
+    public function storedream(Dream $post)
     {
-            $tmpslug = Str::slug($post->title);     
-        $promodel=Dream::where('slug', $tmpslug )->first();
+        $tmpslug = Str::slug($post->title);
+        $promodel = Dream::where('slug', $tmpslug)->first();
         if (!is_null($promodel)) {
-          //error
-          $tmpslug =  $tmpslug . Str::random(5);                
-          }      
-          $post->slug =$tmpslug; 
-   
-          $post->save();   
-        
-          return  $post->id;  
+            //error
+            $tmpslug = $tmpslug . Str::random(5);
+        }
+        $post->slug = $tmpslug;
+
+        $post->save();
+
+        return $post->id;
     }
     /**
      * Display the specified resource.
@@ -71,49 +71,54 @@ class DreamController extends Controller
      */
     public function edit(string $id)
     {
-       
+
         $item = Dream::find($id);
-       
-        return view("admin.dream.edit", ["dream" => $item ]);
+
+        return view("admin.dream.edit", ["dream" => $item]);
     }
     public function dreambyslug(string $slug)
     {
-       
-        $item = Dream::where('slug',$slug)->first();       
-        return view("site.dream.show", ["dream" => $item ]);
+
+        $item = Dream::find($slug);
+        if ($item) {
+            return view("site.dream.show", ["dream" => $item]);
+        } else {
+            abort(404, '');
+        }
+
     }
-    
+
     public function agreedreams()
     {
-        $items = Dream::where('status',1)->orderByDesc('created_at')->get();
-        return view("site.dream.all", ["dreams" => $items ]);
-        
+        $items = Dream::where('status', 1)->orderByDesc('created_at')->get();
+        return view("site.dream.all", ["dreams" => $items]);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(DreamRequest $request,$id)
+    public function update(DreamRequest $request, $id)
     {
         $formdata = $request->all();
         $validator = Validator::make(
-          $formdata,
-          $request->rules(),
-          $request->messages()
+            $formdata,
+            $request->rules(),
+            $request->messages()
         );
         if ($validator->fails()) {
-    
-          return response()->json($validator);
-    
+
+            return response()->json($validator);
+
         } else {
-          
-          //reset all to 0
-          Dream::find($id)->update([      
-            'status' => $formdata["status"] ,
-    
-          ]);
-      
-          return response()->json("ok");
+
+            //reset all to 0
+            Dream::find($id)->update([
+                'status' => $formdata["status"],
+
+            ]);
+
+            return response()->json("ok");
         }
     }
 
@@ -123,9 +128,9 @@ class DreamController extends Controller
     public function destroy(string $id)
     {
         $item = Dream::find($id);
-        if (!( $item  === null)) {
-          
-          Dream::find($id)->delete();
+        if (!($item === null)) {
+
+            Dream::find($id)->delete();
         }
         return redirect()->back();
     }
