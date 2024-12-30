@@ -45,6 +45,7 @@ if( validatempty($("#question"))){
 					$("html, body").animate({ scrollTop: $('#dream-result-section').offset().top -'100' }, 500);
 			
 				}  
+				resetForm(formid);
 
 			}, error: function (errorresult) {
 				var response = $.parseJSON(errorresult.responseText);
@@ -53,7 +54,6 @@ if( validatempty($("#question"))){
 				 $("#" + key).append('<li class="text-danger">' + val[0] + '</li>');				
 					$("#" + key).addClass('is-invalid');
 				});
-
 			}, finally: function () {		 
 
 			}
@@ -62,7 +62,12 @@ if( validatempty($("#question"))){
 
    //end register
    
-  });
+});
+  function resetForm(formid) {
+	 
+	jQuery(formid)[0].reset();
+  
+}
   function noteSuccess() {
   //  swal("تم   بنجاح");
   }
