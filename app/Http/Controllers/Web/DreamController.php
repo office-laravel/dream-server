@@ -34,16 +34,37 @@ class DreamController extends Controller
      */
     public function create()
     {
-        //
-    }
 
+
+        return view("admin.dream.add");
+    }
+    public function store(DreamRequest $request)
+    {
+        $formdata = $request->all();
+        $validator = Validator::make(
+            $formdata,
+            $request->rules(),
+            $request->messages()
+        );
+
+        if ($validator->fails()) {
+
+            return response()->json($validator);
+
+        } else {
+            $newObj = new Dream();
+            $newObj->title = $formdata['title'];
+            $newObj->content = $formdata['content'];
+            $newObj->question = isset($formdata["question"]) ? $formdata['question'] : "";
+            $newObj->status = $formdata["status"];
+            $newObj->save();
+            return response()->json("ok");
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+
     public function storedream(Dream $post)
     {
         $tmpslug = Str::slug($post->title);
@@ -111,11 +132,11 @@ class DreamController extends Controller
             return response()->json($validator);
 
         } else {
-
-            //reset all to 0
             Dream::find($id)->update([
                 'status' => $formdata["status"],
-
+                'title' => $formdata["title"],
+                'content' => $formdata["content"],
+                'question' => isset($formdata["question"]) ? $formdata["question"] : "",
             ]);
 
             return response()->json("ok");
@@ -129,7 +150,6 @@ class DreamController extends Controller
     {
         $item = Dream::find($id);
         if (!($item === null)) {
-
             Dream::find($id)->delete();
         }
         return redirect()->back();

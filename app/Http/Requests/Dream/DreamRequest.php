@@ -4,7 +4,7 @@ namespace App\Http\Requests\Dream;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
- 
+
 class DreamRequest extends FormRequest
 {
     /**
@@ -14,42 +14,47 @@ class DreamRequest extends FormRequest
     {
         return true;
     }
-    
- 
- 
+
+
+
     public function rules(): array
-    {     
-       return[  
-        /*                    
-        'gender'=>'required|not_in:0,',
-        'martial'=>'required|not_in:0,',
-        'age'=>'required|not_in:0,',
-        'question' => 'required|string',
-        */
-         'status'=>'required|in:0,1,2',
-       ];   
-    
+    {
+        return [
+            /*                    
+            'gender'=>'required|not_in:0,',
+            'martial'=>'required|not_in:0,',
+            'age'=>'required|not_in:0,',
+            'question' => 'required|string',
+        
+            */
+            'title' => 'required|string',
+            'content' => 'required|string',
+            'status' => 'required|in:0,1,2',
+        ];
+
     }
     /**
- * Get the error messages for the defined validation rules.
- *
- * @return array<string, string>
- */
-public function messages(): array
-{  
- 
- 
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
 
-   return[   
-    /*     
-     'gender.required'=>__('messages.this field is required',[],'ar'), 
-    'martial.required'=>__('messages.this field is required',[],'ar'), 
-    'age.required'=>__('messages.this field is required',[],'ar'), 
-    'question.required'=>__('messages.this field is required',[],'ar'), 
-    */
-    'status.required'=>__('messages.this field is required',[],'ar'), 
-    ];
-    
-}
+
+
+        return [
+            /*     
+             'gender.required'=>__('messages.this field is required',[],'ar'), 
+            'martial.required'=>__('messages.this field is required',[],'ar'), 
+            'age.required'=>__('messages.this field is required',[],'ar'), 
+            'question.required'=>__('messages.this field is required',[],'ar'), 
+            */
+            'status.required' => __('messages.this field is required', [], 'ar'),
+            'content.required' => __('messages.this field is required', [], 'ar'),
+            'title.required' => __('messages.this field is required', [], 'ar'),
+        ];
+
+    }
 
 }

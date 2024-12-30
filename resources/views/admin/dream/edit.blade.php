@@ -65,7 +65,7 @@
                             <div class="form-group row">
                                 <label for="title" class="col-sm-3 col-form-label">العنوان</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="title"class="form-control" readonly id="title"
+                                    <input type="text" name="title"class="form-control" id="title"
                                         placeholder="* النص" value="{{ $dream->title }}">
                                     <span id="title-error" class="error invalid-feedback"></span>
                                 </div>
@@ -74,30 +74,20 @@
                             <div class="form-group row">
                                 <label for="title" class="col-sm-3 col-form-label">تفاصيل الحلم</label>
                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="question" id="question" readonly>{{ $dream->question }}</textarea>
+                                    <textarea class="form-control" name="question" id="question">{{ $dream->question }}</textarea>
 
                                     <span id="question-error" class="error invalid-feedback"></span>
                                 </div>
                             </div>
                             <!--   start -->
                             <div class="form-group row">
-                                <label for="title" class="col-sm-3 col-form-label">التفسير </label>
+                                <label for="content" class="col-sm-3 col-form-label">التفسير </label>
                                 <div class="col-sm-9">
-                                    <p id="content">{{ $dream->content }}</p>
+                                    <textarea class="form-control" name="content" id="content">{{ $dream->content }}</textarea>
+                                    <span id="content-error" class="error invalid-feedback"></span>
                                 </div>
                             </div>
-                            <!-- Email end -->
-                            <div class="form-group row">
-                                <label for="slug" class="col-sm-3 col-form-label">Slug</label>
-                                <div class="col-sm-9">
-                                    <input type="text" name="slug"class="form-control" readonly id="slug"
-                                        placeholder="* Slug" value="{{ $dream->slug }}">
-                                    <span id="slug-error" class="error invalid-feedback"></span>
-                                </div>
-                            </div>
-                            <!-- name start -->
 
-                            <!-- name end -->
 
 
                             <div class="form-group row">
